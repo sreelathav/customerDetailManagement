@@ -1,0 +1,168 @@
+
+#****************************************************************************#
+#                                                                            #
+#                        Shell Script MailCust                               #
+#          Prompts for the customer details, and get the email address       #
+#             and then send the given mail to the customer.                  #
+#                                                                            #
+#****************************************************************************#
+
+echo "              "
+echo "********************************************************************"
+echo "                       Mail Customer                                "
+echo "********************************************************************"
+echo "              "
+
+echo "          Do you want to mail one or all the customers?"
+echo "          Choose 1 for mailing one Customer"
+echo "                 2 for mailing all the customers."
+echo -n "                Enter choice: "
+read choice
+echo "                     "
+#
+#  Checking for blank
+#
+if [[ -z $choice ]]
+then
+     echo "           Blank not acceptable."
+     echo "                                "
+     exit 1
+fi
+
+if [ $choice -eq 1 ] 
+then
+
+  #              Finding email address                            #
+
+  echo "      "
+  echo "To email a customer, we have to find the customer in the customer-details."
+  echo -n "Enter name or alias of the customer to be searched: "
+  read customer
+  echo "      "
+
+
+  #              checking for blank                               
+
+  if [[ -z $customer ]]
+  then
+     echo "                 Blank not acceptable."
+     echo "      "
+     exit 1
+  fi
+
+  customerCount=0
+  customerCount=`grep -c -i " "$customer Customer-Details`
+
+
+  if [ $customerCount -eq 0 ]
+  then
+     echo "There is no customer with this name."
+     echo "                                    "
+     exit 0
+  fi
+
+  if [ $customerCount -eq 1 ]
+  then
+      emailad=`grep  " "$customer Customer-Details | awk '{ print $1 }'`
+  fi
+  if [ $customerCount -gt 1 ]
+  then
+    echo "there are more than one customer with the given input."
+    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    grep -i " "$customer Customer-Details | awk '{ print $1 "   " $2 }'
+    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    echo "       "
+    echo -n "Enter the specific email address of the customer you need to find: "
+    read email
+    #
+    # checking for blank
+    #
+    if [[ -z $email ]]
+    then
+        echo "              Blank not acceptable."
+        echo "                                   "
+           exit 1
+    fi
+    emailCount=0
+    emailCount=`grep -c $email Customer-Details`
+
+    if [ $emailCount -eq 1 ]
+    then
+         emailad=`grep  $email Customer-Details | awk '{ print $1 }'`
+    
+    else
+         echo "customer not found with the given email. "
+         echo "                                         "
+         exit 1
+    fi
+  fi
+
+
+  echo "*****************************************************************"
+  echo "                       "
+
+  #--------The E-Mail address is available at this point,----------------#
+  #---------now sending the message to the email address-----------------#
+
+  echo " you are going to mail $customer on the mail address $emailad. "
+  echo "                 "
+
+  echo -n "Enter the subject of your mail: "
+  read subject
+  echo "                  "
+
+  echo -n "Enter the message of your mail in a single line: "
+  read message
+  echo "                   "
+
+  echo $message | mail $emailad -s "$subject"
+
+  echo " Your mail has been sent to $customer. Have a good day. "
+  echo "                                                        "
+  echo "*****************************************************************"
+fi
+
+##
+#            Mailing all the customers from the customer-details
+##
+  echo "*****************************************************************"
+  echo "                                                                 "
+
+if [ $choice -eq 2 ]
+then
+  emailad=`cat Customer-Details | awk '{ print $1 }'`
+
+  echo "            Mailing List"
+  echo $emailad
+  echo "                        "
+
+  echo -n "Enter the subject of your mail: "
+  read subject
+  echo "                                   "
+
+  echo -n "Enter the message of your mail in a single line: "
+  read message
+  echo "                                                    "
+
+  echo $message | mail $emailad -s "$subject"
+
+  echo " Your mail has been sent to all customers. Have a good day. "
+  echo "                                                            "
+  echo "**************************************************************"
+fi
+if [ $choice -ne 1 ] || [ $choice -ne 2 ]
+    then
+        echo "***"
+        echo " **"
+        echo "   Not a valid Choice."
+        echo " **"
+        echo "***"
+fi
+
+#
+#   Taking the control back to the main Menu
+##
+    
+##
+#
+#~~~~~~~~~~~~~~~~End of shell script MailCust~~~~~~~~~~~~~~~~~~~~~~~~~~~#

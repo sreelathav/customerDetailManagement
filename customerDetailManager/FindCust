@@ -1,0 +1,92 @@
+#***********************************************************************####
+#                                                                       ####
+#                       FindCust shell script                           ####
+#            program to find a customer in the customer details file,   ####
+#              by prompting for the name or alias of the customer.      ####
+#                 Using FindCust  can take back the control to Menu.    ####
+#                                                                       ####
+#**************************************************************************#
+#
+# 
+#
+echo "*********************************************************************"
+echo "                          FIND CUSTOMER"
+echo "*********************************************************************"
+
+echo "     "
+echo -n "Enter the name or alias of the customer to be searched: "
+read customer
+echo "     "
+
+# checking for blank
+
+
+if [[ -z $customer ]]
+then
+     echo "     Blank not acceptable."
+     echo "   "
+     exit 1
+fi
+ 
+customerCount=0
+customerCount=`grep -c -i " "$customer Customer-Details`
+#
+#    
+if [ $customerCount -eq 0 ]
+then
+     echo "There is no customer with the given name or alias."
+     echo "                                                  "
+fi
+#
+#
+if [ $customerCount -eq 1 ]
+then
+   echo "*********************************************************************"
+   echo "           "
+   grep -i " "$customer Customer-Details
+   echo "           "
+   echo "*********************************************************************"
+fi
+#
+#
+#
+if [ $customerCount -gt 1 ]
+then
+    echo "there are more than one customer with the given input."
+    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    grep -i " "$customer Customer-Details | awk '{ print $1 "   " $2 }'
+    echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    echo -n "Enter the email address of the customer you need to find: "
+    read email
+    echo "       "
+    #
+    # checking for blank
+    #
+    if [[ -z $email ]]
+    then
+        echo "         Blank for e-mail not acceptable."
+        echo "     "
+        exit 1
+    fi
+    emailCount=0
+    emailCount=`grep -c $email Customer-Details`
+
+    if [ $emailCount -eq 1 ]
+    then
+        grep  $email Customer-Details
+    else
+        echo "customer not found with the given e-mail. "
+        echo "                  "
+    fi
+fi
+    echo "                  "
+    echo "**********************************************************"
+    echo "                  "
+#
+#   Taking the control to the main Menu
+#
+   
+#
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~End of shell script FindCust~~~~~~~~~~~~~~~~#

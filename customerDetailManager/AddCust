@@ -1,0 +1,95 @@
+########################################################################
+##                     Shell script AddCust                           ##
+##       program to append the new customers to the Customer-details  ##
+##       Check on the uniqueness of the e-mail address invoked.       ##
+##       The choice to add another customer,                          ##
+##          without going to the main MENU is provided.               ##
+########################################################################
+#
+#  Note that the program scans the Customer-Details file,
+#    for checking the uniqueness of the e-mail, so it is advisable
+#    to create the customer-detail file in advance, if the AddCust 
+#    is being used for the first time.
+#----------------------------------------------------------------------#
+
+
+echo "***************************************************************"
+echo "        Enter Customer details for adding a New customer       "
+echo "***************************************************************"
+echo "                                                      " 
+          add="y"
+
+while [ $add = "y" ]
+do
+  echo "***"
+  echo " **"
+  echo -n "    please enter customer E-Mail addresss: "
+  read email
+  echo " **"
+  echo "***"
+  #
+  # checking for blank
+  #
+  if [[ -z $email ]]
+  then
+     echo "          Blank not acceptable."
+     add="no"
+  fi
+
+  if [ `grep -c $email Customer-Details` -eq 1 ]
+  then
+      echo
+      echo "??????????????????????????????????????????????????????????"
+      echo 
+      echo "This email address already present in the customer details,"
+      echo "check if you are adding the existing customer again!!!"
+      echo 
+      echo "??????????????????????????????????????????????????????????"
+      echo 
+      echo "If you choose to add, enter unique 'e-mail address'."
+      break 
+  fi
+  
+  echo "              "
+  echo -n "please enter customer name: "
+  read name
+  echo "              "
+  echo -n "please enter customer Alias name: "
+  read alias
+  echo "               "
+  echo "please enter customer address: "
+  read address
+  echo "                "
+  echo -n "please enter customer phone number: "
+  read  phone
+  echo "               "
+
+  echo "$email		 $name		 $alias		 $address			 $phone " >> Customer-Details
+
+  echo "**********************************************************************"
+  add="no"
+  echo -n "If you want to add another customer, pleasse Enter the letter "y": "
+  read add
+  # checking for blank
+
+  if [[ -z $add ]]
+  then
+     echo "taking that as "no"."
+     add="no"
+  fi
+
+  echo "*********************************************************************"
+
+done
+# 
+#    Entering any character other than  "y", terminates the add-customer loop. 
+#
+#   Taking back, the control to main Menu
+##
+    
+##
+#
+######################End of shell script AddCust#########################
+
+
+

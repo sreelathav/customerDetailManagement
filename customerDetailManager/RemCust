@@ -1,0 +1,102 @@
+#****************************************************************************#
+#                                                                            #
+#                  Shell script RemCust                                      #
+#            Prompts for the customer details, finds the customer            #
+#             and removes that particular customer,                          #
+#                from the customer-details file.                             #
+#                                                                            #
+#****************************************************************************#
+
+echo "     "
+echo "***********************************************************************"
+echo "              Remove a Customer                                        "
+echo "***********************************************************************"
+echo "     "
+
+echo "Enter name or alias of the customer to be removed from Customer-Details:"
+read customer
+echo "     "
+
+# checking for blank
+
+if [[ -z $customer ]]
+then
+     echo "                 Blank not acceptable."
+     echo "               "
+     exit 1
+fi
+
+customerCount=0
+customerCount=`grep -c -i " "$customer Customer-Details`
+
+
+if [ $customerCount -eq 0 ]
+then
+   echo " There are no customers with the given name. "
+   echo "    "
+fi
+
+#---------Removing customer----------#
+
+if [ $customerCount -eq 1 ]
+then
+       grep -v " "$customer Customer-Details > adbook
+       cat  adbook > Customer-Details
+       rm adbook
+       echo " Customer $customer removed from Customer-Details. "
+       echo "**********************************************************   "
+fi
+
+#----------In case of duplicate, case sensitive names,"
+#             retrieving email for assurance.           ---------- ------#
+
+
+if [ $customerCount -gt 1 ]
+then
+   echo "        There are more than 1 customer,"
+   echo "           with the given specifications,"
+   echo "            you might want to be more specific."
+   echo "    "
+   echo "-------------------------------------------------------------"
+   grep -i " "$customer Customer-Details | awk '{ print $1 "   " $2 }' 
+   echo "--------------------------------------------------------------"
+   echo "Enter e-mail, of the customer to be removed from the above list:"
+   read email
+   echo "   "
+   #
+   # checking for blank
+   #
+   if [[ -z $customer ]]
+   then
+     echo "      Blank not acceptable."
+     echo "                           "
+     exit 1
+   fi
+   emailCount=0
+   emailCount=`grep -c  $email Customer-Details`
+   
+   #---------Removing customer, with the given email--------#
+
+   if [ $emailCount -eq 1 ]
+   then 
+       grep -v $email Customer-Details > adbook
+       cat  adbook > Customer-Details
+       rm adbook
+       echo "Customer with email address $email removed from Customer-Details."
+       echo "**************************************************************** "
+   else
+       echo "The customer with the given email not found."
+       echo "     "
+   fi
+fi
+echo "************************************************************************"
+echo "                   "
+#
+#
+#   Taking back, the control to main Menu
+##
+   
+##
+#
+#
+#------------------------End of shell script RemCust--------------------#
